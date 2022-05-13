@@ -16,26 +16,16 @@ describe("Bookish application", function () {
     const books = [
       {
         name: "Refactoring",
-        id: "1",
-      },
-      {
-        name: "Domain-driven design",
-        id: "2",
-      },
-      {
-        name: "Building microservices",
-        id: "3",
+        id: 1,
       },
     ];
-    return Promise.all(
-      books.map((item) => {
-        return axios.post("http://localhost:8080/books", item, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-      })
-    );
+    return books.map(async (item) => {
+      await axios.post("http://localhost:8080/books", item, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    });
   });
   it("Visit the bookish", function () {
     cy.visit("http://localhost:3000");
@@ -47,14 +37,18 @@ describe("Bookish application", function () {
     cy.get('div[data-test="book-list"]').should("exist");
 
     cy.get("div.book-item").should((books) => {
-      expect(books).to.have.length(3);
+      expect(books).to.have.length(1);
 
       const titles = [...books].map((x) => x.querySelector("h2").innerHTML);
-      expect(titles).to.deep.equal([
-        "Refactoring",
-        "Domain-driven design",
-        "Building microservices",
-      ]);
+
+      expect(titles).to.deep.equal(["Refactoring"]);
     });
+  });
+
+  it("Goes to detail page", () => {
+    cy.visit("http://localhost:3000");
+    cy.get("div.book-item").contains("View Details").eq(0).click();
+    cy.url().should("include", "/books/1");
+    cy.get("h2.book-title").contains("Refactoring");
   });
 });

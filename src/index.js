@@ -1,12 +1,27 @@
+import { createTheme, ThemeProvider } from "@material-ui/core";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+
+export const theme = createTheme({
+  //here you set palette, typography ect...
+  palette: {
+    text: {
+      secondary: "#010101",
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </Router>
   </React.StrictMode>
 );
 
